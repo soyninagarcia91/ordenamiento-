@@ -1,0 +1,136 @@
+using System;
+using System.Net.NetworkInformation;
+using System.Security.Claims;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+class Programa
+{
+    static void Menu()
+    {
+        Console.WriteLine("Seleccione una opción:");
+        Console.WriteLine("1 - Cargar calificaciones de los clientes");
+        Console.WriteLine("2 - Ver la mejor calificación");
+        Console.WriteLine("3 - Ver la menor calificación");
+        Console.WriteLine("4 - Ver si hubo calificaciones repetidas");
+        Console.WriteLine("5 - Ver listado completo");
+        Console.WriteLine("0 - Salir");
+    }
+
+    static void Cargar(out int[] calificaciones, out string[] nombres)
+    {
+        int cantidad = 15;
+        calificaciones = new int[cantidad];
+        nombres = new string[cantidad];
+
+        for (int i = 0; i < cantidad; i++)
+        {
+            Console.Write($"Ingrese nombre del cliente {i + 1}: ");
+            nombres[i] = Console.ReadLine();
+            calificaciones[i] = PedirCalificacion(i + 1);
+        }
+    }
+
+    static int PedirCalificacion(int numeroCliente)
+    {
+        int calificacion;
+        Console.Write($"Ingrese calificación del cliente {numeroCliente}: ")
+;
+
+        while (!int.TryParse(Console.ReadLine(), out calificacion) || calificacion < 0 || calificacion > 10)
+            {
+            Console.WriteLine(" Calificación inválida. Ingrese un número del 0 al 10.");
+            }
+
+        return calificacion;
+    }
+
+    static void MostrarListado(int[] calificaciones, string[] nombres)
+    {
+        Console.WriteLine("\n📋 Listado de calificaciones:");
+        for (int i = 0; i < calificaciones.Length; i++)
+        {
+            Console.WriteLine($"{nombres[i]} → {calificaciones[i]}");
+        }
+    }
+
+    static void Main(string[] args)
+    {
+        int[] aCalificacion = new int[15];
+        string[] aNombres = new string[15];
+        bool datosCargados = false;
+        string opcion;
+
+        do
+        {
+            Menu();
+            opcion = Console.ReadLine();
+
+            switch (opcion)
+            {
+                case "1":
+                    Cargar(out aCalificacion, out aNombres);
+                    datosCargados = true;
+                    break;
+
+                case "2":
+                    if (datosCargados)
+                        Console.WriteLine($"⭐ Mejor calificación: {aCalificacion.Max()}");
+                    else
+                        Console.WriteLine(" Primero debe cargar los datos.")
+;
+                    break;
+
+                case "3":
+                    if (datosCargados)
+                        Console.WriteLine($" Menor calificación: {aCalificacion.Min()}");
+                    else
+                        Console.WriteLine("Primero debe cargar los datos.");
+                    break;
+
+                case "4":
+                    if (datosCargados)
+                    {
+                        bool hayRepetidos = false;
+                        for (int i = 0; i < aCalificacion.Length; i++)
+                        {
+                            for (int j = i + 1; j < aCalificacion.Length; j ++)
+                            {
+                                if (aCalificacion[i] == aCalificacion[j])
+                                {
+                                    hayRepetidos = true;
+                                    break;
+                                }
+                            }
+                            if (hayRepetidos) break;
+                        }
+                     
+
+                            Console.WriteLine(hayRepetidos
+                                                        ? "Hay calificaciones repetidas."
+                                                        : " No hay calificaciones repetidas.");
+                    }
+                    else
+                        Console.WriteLine("⚠️ Primero debe cargar los datos.");
+                    break;
+
+                case "5":
+                    if (datosCargados)
+                        MostrarListado(aCalificacion, aNombres);
+                    else
+                        Console.WriteLine("Primero debe cargar los datos.");
+                    break;
+
+                case "0":
+                    Console.WriteLine(" Fin del programa.");
+                    break;
+
+                default:
+                    Console.WriteLine(" Opción inválida.");
+                    break;
+            }
+
+            Console.WriteLine(); // Línea en blanco
+        }
+        while (opcion != "0");
+    }
+}
