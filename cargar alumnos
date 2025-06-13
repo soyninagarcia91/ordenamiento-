@@ -1,0 +1,55 @@
+using System;
+
+struct Alumno
+{
+    public int Legajo;
+    public string Nombre;
+    public string Apellido;
+    public bool EstaActivo;
+}
+
+class Programa
+{
+    static void Main(string[] args)
+    {
+        Console.Write("¿Cuántos alumnos desea cargar? ");
+        int cantidad;
+        while (!int.TryParse(Console.ReadLine(), out cantidad) || cantidad <= 0)
+        {
+            Console.Write("Ingrese un número válido: ");
+        }
+
+        Alumno[] alumnos = new Alumno[cantidad];
+
+        for (int i = 0; i < cantidad; i++)
+        {
+            Console.WriteLine($"\nAlumno {i + 1}");
+
+            Console.Write("Legajo: ");
+            while (!int.TryParse(Console.ReadLine(), out alumnos[i].Legajo))
+            {
+                Console.Write("Legajo inválido. Intente nuevamente: ");
+            }
+
+            Console.Write("Nombre: ");
+            alumnos[i].Nombre = Console.ReadLine();
+
+            Console.Write("Apellido: ");
+            alumnos[i].Apellido = Console.ReadLine();
+
+            Console.Write("¿Está activo? (s/n): ");
+            string activo = Console.ReadLine();
+            alumnos[i].EstaActivo = activo.Trim().ToLower() == "s" || activo.Trim().ToLower() == "si";
+        }
+
+        Array.Sort(alumnos, (a, b) => a.Legajo.CompareTo(b.Legajo));
+
+        int activos = 0;
+        foreach (var alumno in alumnos)
+        {
+            if (alumno.EstaActivo) activos++;
+        }
+
+        Console.WriteLine($"\nCantidad de alumnos activos: {activos}");
+    }
+}
